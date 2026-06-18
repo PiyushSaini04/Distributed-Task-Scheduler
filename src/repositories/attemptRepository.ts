@@ -91,3 +91,21 @@ export async function countCompletedAttempts(jobId: string): Promise<number> {
   );
   return parseInt(result.rows[0]?.count ?? '0', 10);
 }
+
+export async function countByJobIds(jobIds: string[]): Promise<Map<string, number>> {
+  if (jobIds.length === 0) return new Map();
+
+  const result = await query<{ job_id: string; count: string }>(
+    `SELECT job_id, COUNT(*)::text as count
+     FROM job_attempts
+     WHERE job_id = ANY($1)
+     GROUP BY job_id`,
+    [jobIds],
+  );
+
+  const map = new Map<string, number>();
+  for (const row of result.rows) {
+    map.set(row.job_id, parseInt(row.count, 10));
+  }
+  return map;
+}

@@ -131,6 +131,14 @@ services:
     depends_on:
       - prometheus
 
+  dashboard:
+    build:
+      context: ./frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
+
 volumes:
   pgdata:
   redisdata:

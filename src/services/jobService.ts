@@ -42,6 +42,15 @@ export async function getStats(): Promise<JobStats> {
   const counts = await jobRepository.getStatsCounts();
   const { throughputPerMinute, avgProcessingTimeMs } =
     await jobRepository.getThroughputAndAvgTime();
+  const queueDepth = await producer.getPendingDepth();
+
+  const totalJobs =
+    (counts.pending ?? 0) +
+    (counts.processing ?? 0) +
+    (counts.completed ?? 0) +
+    (counts.failed ?? 0) +
+    (counts.retrying ?? 0) +
+    (counts.deadLetter ?? 0);
 
   return {
     pending: counts.pending ?? 0,
@@ -50,6 +59,8 @@ export async function getStats(): Promise<JobStats> {
     failed: counts.failed ?? 0,
     retrying: counts.retrying ?? 0,
     deadLetter: counts.deadLetter ?? 0,
+    queueDepth,
+    totalJobs,
     throughputPerMinute,
     avgProcessingTimeMs,
   };

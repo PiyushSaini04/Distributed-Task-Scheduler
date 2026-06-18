@@ -45,7 +45,16 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     const offset = parseInt((req.query.offset as string) ?? '0', 10);
 
     const jobs = await jobService.listJobs(status, limit, offset);
-    res.json({ jobs, limit, offset });
+    const attemptCounts = await attemptRepository.countByJobIds(jobs.map((j) => j.id));
+
+    res.json({
+      jobs: jobs.map((job) => ({
+        ...job,
+        attemptCount: attemptCounts.get(job.id) ?? 0,
+      })),
+      limit,
+      offset,
+    });
   } catch (err) {
     next(err);
   }

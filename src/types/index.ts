@@ -46,6 +46,8 @@ export interface JobStats {
   failed: number;
   retrying: number;
   deadLetter: number;
+  queueDepth: number;
+  totalJobs: number;
   throughputPerMinute: number;
   avgProcessingTimeMs: number;
 }

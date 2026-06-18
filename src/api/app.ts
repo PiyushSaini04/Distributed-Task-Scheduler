@@ -9,6 +9,18 @@ import { registry, updateQueueMetrics } from '../metrics/prometheus';
 export function createApp(): express.Application {
   const app = express();
 
+  app.use((req, res, next) => {
+    const origin = process.env.CORS_ORIGIN ?? '*';
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
+
   app.use(express.json());
   app.use(requestLogger);
 
