@@ -1,0 +1,7 @@
+CREATE TABLE workers (
+  id          VARCHAR(100) PRIMARY KEY,
+  status      VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
+  last_seen   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  started_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  jobs_processed INTEGER NOT NULL DEFAULT 0
+);
